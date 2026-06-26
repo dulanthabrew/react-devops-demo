@@ -17,14 +17,9 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
 
-          # NEW — Docker Compose
           script: |
             cd ~/react-devops-demo
             git pull origin main
-            sudo docker stop react-app || true
-            sudo docker rm react-app || true
-            sudo docker build -t react-app .
-            sudo docker run -d \
-              --name react-app \
-              -p 80:80 \
-              react-app
+            sudo docker compose down
+            sudo docker rm -f nginx-proxy react-app prometheus grafana node-exporter || true
+            sudo docker compose up --build -d
